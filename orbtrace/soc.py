@@ -91,8 +91,74 @@ class USBAllocator:
         self._next_out_ep += 1
         return n
 
+
+class Wiggler(Module):
+    def __init__(self, gpio, ext):
+        self.counter = Signal(16)
+
+        self.sync += self.counter.eq(self.counter + 1)
+        self.comb += [
+            gpio[0].dir.eq(1),
+            gpio[1].dir.eq(1),
+            gpio[2].dir.eq(1),
+            gpio[3].dir.eq(1),
+            gpio[4].dir.eq(1),
+            gpio[5].dir.eq(1),
+            gpio[0].data.eq(self.counter[-1]),
+            gpio[1].data.eq(0),
+            gpio[2].data.eq(0),
+            gpio[3].data.eq(0),
+            gpio[4].data.eq(1),
+            gpio[5].data.eq(0),
+            ext.EXT_0.eq(self.counter[-1]),
+            ext.EXT_1.eq(self.counter[-1]),
+            ext.EXT_2.eq(self.counter[-1]),
+            ext.EXT_3.eq(self.counter[-1]),
+            ext.EXT_4.eq(self.counter[-1]),
+            ext.EXT_5.eq(self.counter[-1]),
+            ext.EXT_6.eq(self.counter[-1]),
+            ext.EXT_7.eq(self.counter[-1]),
+            ext.EXT_8.eq(self.counter[-1]),
+            ext.EXT_9.eq(self.counter[-1]),
+            ext.EXT_10.eq(self.counter[-1]),
+            ext.EXT_11.eq(self.counter[-1]),
+            ext.EXT_12.eq(self.counter[-1]),
+            ext.EXT_13.eq(self.counter[-1]),
+            ext.EXT_14.eq(self.counter[-1]),
+            ext.EXT_15.eq(self.counter[-1]),
+            ext.EXT_16.eq(self.counter[-1]),
+            ext.EXT_17.eq(self.counter[-1]),
+            ext.EXT_18.eq(self.counter[-1]),
+            ext.EXT_19.eq(self.counter[-1]),
+            ext.EXT_20.eq(self.counter[-1]),
+            ext.EXT_21.eq(self.counter[-1]),
+            ext.EXT_22.eq(self.counter[-1]),
+            ext.EXT_23.eq(self.counter[-1]),
+            ext.EXT_24.eq(self.counter[-1]),
+            ext.EXT_25.eq(self.counter[-1]),
+            ext.EXT_26.eq(self.counter[-1]),
+            ext.EXT_27.eq(self.counter[-1]),
+            ext.EXT_28.eq(self.counter[-1]),
+            ext.EXT_29.eq(self.counter[-1]),
+            ext.EXT_30.eq(self.counter[-1]),
+            ext.EXT_31.eq(self.counter[-1]),
+        ]
+
 class OrbSoC(SoCCore):
-    def __init__(self, platform, sys_clk_freq, with_debug, with_trace, with_target_power, with_dfu, with_reset_csr, with_test_io, usb_vid, usb_pid, led_default, bootloader_auto_reset, **kwargs):
+    def __init__(self,
+                 platform,
+                 sys_clk_freq,
+                 with_debug,
+                 with_trace,
+                 with_target_power,
+                 with_dfu,
+                 with_reset_csr,
+                 with_test_io,
+                 usb_vid,
+                 usb_pid,
+                 led_default, 
+                 bootloader_auto_reset, 
+                 **kwargs):
 
         # SoCCore
         SoCCore.__init__(self, platform, sys_clk_freq,
@@ -168,6 +234,13 @@ class OrbSoC(SoCCore):
 
         # USB
         self.finalize_usb()
+
+        self.add_wiggler()
+
+    def add_wiggler(self):
+        ext   = self.platform.request('ext')
+        gpio  = [ self.platform.request('gpio') for i in range(6) ]
+        self.submodules.wiggler = Wiggler(gpio, ext)
 
     def add_auto_reset(self):
         programn = self.platform.request('programn')
@@ -407,11 +480,6 @@ class OrbSoC(SoCCore):
         is_v2 = Signal()
         self.comb += self.cmsis_dap.is_v2.eq(is_v2)
 
-        can = self.platform.request('gpio', 0)
-        self.comb += can.data.eq(self.cmsis_dap.can)
-        if hasattr(can, 'dir'):
-            self.comb += can.dir.eq(1)
-
         if with_v1 and with_v2:
             out_mux = Multiplexer(stream_desc, 2)
             in_demux = Demultiplexer(stream_desc, 2)
@@ -580,7 +648,7 @@ class OrbSoC(SoCCore):
         data_if     = self.usb_alloc.interface(with_winusb=False)
         data_in_ep  = self.usb_alloc.in_ep()
         data_out_ep = self.usb_alloc.out_ep()
-
+        
         # IAD descriptor needed on windows
         with self.usb_conf_desc.InterfaceAssociationDescriptor() as i:
             i.bFirstInterface = 0

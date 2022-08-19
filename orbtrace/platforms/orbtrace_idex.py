@@ -1,3 +1,4 @@
+from deps.litex.litex.build.generic_platform import IOStandard
 from litex.build.generic_platform import *
 from litex.build.lattice import LatticePlatform
 from litex.build.openfpgaloader import OpenFPGALoader
@@ -29,9 +30,9 @@ _io = [
 
     # Debug
     ('debug', 0,
-        Subsignal('jtck',     Pins('J5')), # SWCLK was B13, now on EXT_23/P19
+        Subsignal('jtck',     Pins('B13')), # SWCLK was B13, now on EXT_23/P19 (J5)
         Subsignal('jtck_dir', Pins('B14')),
-        Subsignal('jtms',     Pins('J4')), # SWDIO was A14, now on EXT_22/P21
+        Subsignal('jtms',     Pins('A14')), # SWDIO was A14, now on EXT_22/P21 (J4)
         Subsignal('jtms_dir', Pins('A15')),
         Subsignal('jtdo',     Pins('B12')),
         Subsignal('jtdi',     Pins('A12')),
@@ -134,14 +135,14 @@ _io = [
 _connectors = [
     ('ext',
         '- - - - - - - - - - - - - - - - - - '
-        'J5 K1 J4 K2 - - ' # 18-21
-        'K3 J1 J3 J2 - - ' # 24-27
-        'H4 H2 H5 G1 - - ' # 30-33
-        'G3 G2 H3 F1 - - ' # 36-39
-        'G4 F2 G5 E1 - - ' # 42-45
-        'F3 E2 E3 D1 - - ' # 48-51
-        'F4 C1 F5 C2 - - ' # 54-57
-        'D3 B1 C3 B2 - - ' # 60-63
+        'J5 K1 J4 K2 - - '
+        'K3 J1 J3 J2 - - '
+        'H4 H2 H5 G1 - - '
+        'G3 G2 H3 F1 - - '
+        'G4 F2 G5 E1 - - '
+        'F3 E2 E3 D1 - - '
+        'F4 C1 F5 C2 - - '
+        'D3 B1 C3 B2 - - '
         '- - - - '
     ),
 ]
@@ -155,6 +156,44 @@ class Platform(LatticePlatform):
     def __init__(self, device='25F', toolchain='trellis', **kwargs):
         assert device in ['25F', '45F']
         LatticePlatform.__init__(self, f'LFE5U-{device}-8BG256C', _io, _connectors, toolchain=toolchain, **kwargs)
+
+        self.add_extension([
+            ('ext', 0,
+                Subsignal('EXT_0',  Pins('ext:61')),
+                Subsignal('EXT_1',  Pins('ext:63')),
+                Subsignal('EXT_2',  Pins('ext:62')),
+                Subsignal('EXT_3',  Pins('ext:60')),
+                Subsignal('EXT_4',  Pins('ext:55')),
+                Subsignal('EXT_5',  Pins('ext:57')),
+                Subsignal('EXT_6',  Pins('ext:50')),
+                Subsignal('EXT_7',  Pins('ext:48')),
+                Subsignal('EXT_8',  Pins('ext:51')),
+                Subsignal('EXT_9',  Pins('ext:49')),
+                Subsignal('EXT_10', Pins('ext:54')),
+                Subsignal('EXT_11', Pins('ext:56')),
+                Subsignal('EXT_12', Pins('ext:44')),
+                Subsignal('EXT_13', Pins('ext:42')),
+                Subsignal('EXT_14', Pins('ext:43')),
+                Subsignal('EXT_15', Pins('ext:45')),
+                Subsignal('EXT_16', Pins('ext:39')),
+                Subsignal('EXT_17', Pins('ext:37')),
+                Subsignal('EXT_18', Pins('ext:36')),
+                Subsignal('EXT_19', Pins('ext:38')),
+                Subsignal('EXT_20', Pins('ext:32')),
+                Subsignal('EXT_21', Pins('ext:30')),
+                Subsignal('EXT_22', Pins('ext:20')),
+                Subsignal('EXT_23', Pins('ext:18')),
+                Subsignal('EXT_24', Pins('ext:33')),
+                Subsignal('EXT_25', Pins('ext:31')),
+                Subsignal('EXT_26', Pins('ext:26')),
+                Subsignal('EXT_27', Pins('ext:24')),
+                Subsignal('EXT_28', Pins('ext:25')),
+                Subsignal('EXT_29', Pins('ext:27')),
+                Subsignal('EXT_30', Pins('ext:19')),
+                Subsignal('EXT_31', Pins('ext:21')),
+                IOStandard('LVCMOS33')
+            )
+        ])
 
     def get_crg(self, sys_clk_freq):
         crg = CRG(self, sys_clk_freq)

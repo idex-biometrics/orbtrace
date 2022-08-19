@@ -10,6 +10,7 @@ def get_version_bcd():
     m = re.match(r'v(\d{1,2})\.(\d)(?:\.(\d+))?-', get_version())
 
     if not m:
+        return 0
         raise ValueError('Version doesn\'t match pattern representable as BCD')
 
     major, minor, patch = m.groups()

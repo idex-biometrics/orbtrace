@@ -16,20 +16,30 @@ from orbtrace.soc import OrbSoC
 def main():
     parser = argparse.ArgumentParser(description = "Orbtrace", add_help = False)
 
-    parser_actions = parser.add_argument_group('Actions')
+    parser_actions  = parser.add_argument_group('Actions')
     parser_orbtrace = parser.add_argument_group('Orbtrace options')
     parser_platform = parser.add_argument_group('Platform options')
 
-    parser_platform.add_argument("--platform", choices = ['ecpix5', 'orbtrace_mini'], required = True, help = 'Select platform')
-    parser_platform.add_argument("--profile", default = 'default', help = 'Select profile (argument defaults)')
+    parser_platform.add_argument(
+        "--platform", 
+        choices = ['ecpix5', 'orbtrace_mini', 'orbtrace_idex'], 
+        default="orbtrace_idex", 
+        help = 'Select platform'
+    )
+    parser_platform.add_argument(
+        "--profile", 
+        default = 'default', 
+        help = 'Select profile (argument defaults)'
+    )
 
     args, _ = parser.parse_known_args()
 
     if args.platform == 'ecpix5':
         from orbtrace.platforms.ecpix5 import Platform
-    
     elif args.platform == 'orbtrace_mini':
         from orbtrace.platforms.orbtrace_mini import Platform
+    elif args.platform == 'orbtrace_idex':
+        from orbtrace.platforms.orbtrace_idex import Platform
 
     Platform.add_arguments(parser_platform)
 

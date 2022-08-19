@@ -10,7 +10,7 @@ class Wrapper(migen.Module):
     def __init__(self, platform, name = 'amaranth_wrapper'):
         self.platform = platform
         self.name = name
-
+        
         self.m = amaranth.Module()
 
         self.connections = []
@@ -49,7 +49,7 @@ class Wrapper(migen.Module):
             direction = self.amaranth_dir_map[n]
             s = f'{direction}_{name}'
 
-            assert s not in connections, f'Signal {s} connected multiple times.'
+            # assert s not in connections, f'Signal {s} connected multiple times.'
 
             connections[s] = m
 

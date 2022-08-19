@@ -1,0 +1,22 @@
+
+export ORBTRACE_ROOT="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd -P )"
+
+
+# ----------------------------------------------------------------------
+# Python Virtual Env
+# ----------------------------------------------------------------------
+
+venv=.venv
+
+if [[ ! -e $venv ]]; then
+    echo "Creating venv $venv"
+    python3 -m venv $venv
+    source $venv/bin/activate
+    pip install wheel setuptools setuptools_scm
+    pip install -r requirements.txt
+else
+    echo "Activating venv $venv"
+    source $venv/bin/activate
+fi
+
+module load yosys/v0.20 prjtrellis/master nextpnr/master gcc/riscv/2022.08.08
