@@ -29,15 +29,15 @@ _io = [
 
     # Debug
     ('debug', 0,
-        Subsignal('jtck',     Pins('B13')),
-        Subsignal('jtck_dir', Pins('B14')),
-        Subsignal('jtms',     Pins('A14')),
-        Subsignal('jtms_dir', Pins('A15')),
-        Subsignal('jtdo',     Pins('B12')),
-        Subsignal('jtdi',     Pins('A12')),
-        Subsignal('jtdi_dir', Pins('A13')),
-        Subsignal('nrst',     Pins('A11')),
-        Subsignal('nrst_dir', Pins('B11')),
+        Subsignal('jtck',     Pins('J4')),  # SWCLK on EXT_22/LA03_N/AB16
+        Subsignal('jtck_dir', Pins('B14')), #
+        Subsignal('jtms',     Pins('J5')),  # SWDIO on EXT_23/LA03_P/AB17
+        Subsignal('jtms_dir', Pins('A15')), #
+        Subsignal('jtdo',     Pins('B12')), #
+        Subsignal('jtdi',     Pins('A12')), #
+        Subsignal('jtdi_dir', Pins('A13')), #
+        Subsignal('nrst',     Pins('A11')), #
+        Subsignal('nrst_dir', Pins('B11')), #
         IOStandard('LVCMOS33')
     ),
 
